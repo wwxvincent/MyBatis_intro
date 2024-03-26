@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="jdbcConfig.properties"></properties>
+    <typeAliases>
+<!--        <typeAlias type="com.vincent.domain.User" alias="User"></typeAlias>-->
+        <!-- 每次在domain中新增时都得写一遍这个配置项，-->
+        <!-- 推荐使用第二种方式 package -->
+        <package name="com.vincent.domain"/>
+    </typeAliases>
+    <!-- 配置连接数据库的环境-->
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <!-- 配置连接数据库的四个基本信息 -->
+<!--                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>-->
+<!--&lt;!&ndash;                 <property name="url" value="jdbc:mysql:///mybatis?characterEncoding=utf8"/> &ndash;&gt;-->
+<!--                <property name="url" value="jdbc:mysql://localhost:3306/mybatis"/>-->
+<!--                <property name="username" value="root"/>-->
+<!--                <property name="password" value="vincent2017727"/>-->
+                <property name="driver" value="${jdbc.driver}"></property>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+        <!-- creat a new env for test-->
+        <environment id="test">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${jdbc.driver}"></property>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.username}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+
+    </environments>
+    <!-- 引入映射文件 -->
+    <mappers>
+<!--        <mapper resource="com/vincent/mapper/UserMapper.xml"/>-->
+        <package name="com.vincent.mapper"/>
+    </mappers>
+</configuration>

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.vincent.mapper.BrandMapper">
+<!--    <select id="selectAll" resultType="Brand">-->
+    <resultMap id="brandMap" type="Brand">
+        <id column="id" property="id"></id>
+        <result column="brand_name" property="brandName"/>
+        <result column="company_name" property="companyName"/>
+        <result column="ordered" property="ordered"/>
+        <result column="description" property="description"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!--
+    <insert id="insert">
+        insert into brand (brand_name, company_name, ordered, description, status)
+        values (#{brandName},#{companyName},#{ordered},#{description},#{status});
+    </insert>
+    -->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into brand (brand_name, company_name, ordered, description, status)
+        values (#{brandName},#{companyName},#{ordered},#{description},#{status});
+    </insert>
+    <insert id="insertBatch">
+        insert into brand (brand_name, company_name, ordered, description, status)
+        values
+        <foreach collection="brands" item="brand" separator=",">
+            (#{brand.brandName}, #{brand.companyName}, #{brand.ordered}, #{brand.description}, #{brand.status})
+        </foreach>;
+    </insert>
+    <update id="updatedById">
+        update  brand
+        <set>
+            <if test="brandName != null and brandName !=''">
+                brand_name = #{brandName},
+            </if>
+            <if test ="companyName != null and companyName !='' ">
+                company_name= #{companyName},
+            </if>
+            <if test="ordered != null">
+                ordered= #{ordered},
+            </if>
+            <if test="description != null and description != '' ">
+                description = #{description},
+            </if>
+            <if test="status != null" >
+                status = #{status}
+            </if>
+        </set>
+        where id = #{id};
+    </update>
+    <delete id="deleteById">
+        delete
+        from brand
+        where id = #{id}
+    </delete>
+    <delete id="deleteByIds">
+        delete
+        from brand
+        where id in (
+            <foreach collection="array" item = "id" separator=",">
+                #{id}
+            </foreach>
+            );
+    </delete>
+    <select id="selectAll" resultMap="brandMap">
+        select * from brand;
+    </select>
+    <select id="selectByCompanyName" resultMap="brandMap">
+<!--
+        select *
+        from brand where company_name like #{companyName};
+        -->
+<!--
+        select *
+        from brand where company_name like '%${companyName}%';
+        -->
+        select *
+        from brand where company_name like concat('%', #{companyName},'%');
+    </select>
+    <select id="selectByCompanyNameAndStatus" resultMap="brandMap">
+        select *
+        from brand where company_name like concat('%', #{companyName},'%')
+        and status=#{status}
+    </select>
+    <select id="selectByBrand" resultMap="brandMap">
+        select *
+        from brand where company_name like concat('%', #{companyName},'%')
+        and status=#{status}
+    </select>
+<!--    <select id="selectByCondition" resultMap="brandMap">-->
+<!--        select *-->
+<!--        from brand where company_name like concat('%', #{companyName},'%')-->
+<!--        and status=#{status}-->
+<!--        and brand_name like concat('%', #{brand_name},'%')-->
+<!--    </select>-->
+    <!-- 动态标签-->
+    <select id="selectByCondition" resultMap="brandMap">
+        select * from brand
+        <where>
+            <if test="status !=null">
+                and status=#{status}
+            </if>
+            <if test="companyName != null and companyName !=''">
+                and company_name like concat('%', #{companyName},'%')
+            </if>
+            <if test="brand_name !=null and brand_name !=''">
+                and brand_name like concat('%', #{brand_name},'%')
+            </if>
+        </where>
+    </select>
+    <select id="selectByCondition2" resultMap="brandMap">
+        select * from brand
+        <where>
+        <choose>
+            <when test="status !=null">
+                and status=#{status}
+            </when>
+            <when test="companyName != null and companyName !=''">
+                and company_name like concat('%', #{companyName},'%')
+            </when>
+            <when test="brand_name !=null and brand_name !=''">
+                and brand_name like concat('%', #{brand_name},'%')
+            </when>
+        </choose>
+        </where>
+    </select>
+
+</mapper>
